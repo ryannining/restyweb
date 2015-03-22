@@ -158,7 +158,9 @@ To make converting php to moonscript easier i have add this function
 
 **explode**
 `result = explode (",", "Hello,World")`
-**echo** same with raw `echo "hello world",view1`
+
+**echo** 
+same with raw `echo "hello world",view1`
 
 
 ## web.lua
@@ -221,14 +223,13 @@ To make upload easier, we make function `getupload` which return table of inputn
 ```
 dofile("web.lua")
 
-~~upload=getupload()~~
 for fn,fr in pairs uploads
   img=assert(mgk.load_image_from_blob(fr[1]))
   mgk.thumb(img,"200x200","static/"..fn)
   img\destroy() 
 ```
 
-Right now you dont need to call getupload, because its called on the web.lua and stored at the `uploads` global variable. So you can check if
+Right now you dont need to call `getupload` (on previous version), because its called on the `web.lua` and stored at the `uploads` global variable. So you can check if
 some input on the http form are contain file name, by checking `uploads['inputname'][1]` if is not `''` then `[2]` will contain the data.
 
 Also other input type (text,button,etc) will captured and stored at `gets` global variable.
