@@ -51,12 +51,12 @@ Why make hello world complicated ? its because we need to parse HTTP request, se
 
 calling `finish` also terminate the execution, so if you call in the midle of code, it will terminate, just like php `die` function. In fact, you can call `die` too it linked to `finish` anyway.
 
-## Cookies and Session
-Cookies and session are easy. Just use global variabel `session` and `cookies` , just dont forget to call `finish` in the end of file.
+## Request, Cookies and Session
+Request, Cookies and session are easy. Just use global variabel `gets`,`session` and `cookies` , just dont forget to call `finish` in the end of file.
 
 ```
 dofile("web.lua")
-raw "Cookies data: #{cookies.data} <br>Session data: #{session.data}"
+raw "Request : #{gets.data} <br>Cookies data: #{cookies.data} <br>Session data: #{session.data}"
 cookies.data="my cookies"
 session.data="my session"
 finish!
@@ -111,4 +111,31 @@ To make converting php to moonscript easier i have add this function
 
 **explode**
 `result = explode (",", "Hello,World")`
+
+## imageMagick module
+This module is loaded into `mgk`, so you can open and process image.
+
+## upload module
+To make upload easier, we make function `getupload` which return table of filename and the content. Example:
+
+```
+dofile("web.lua")
+
+upload=getupload()
+for fn,fr in pairs upload
+  img=assert(mgk.load_image_from_blob(fr))
+  mgk.thumb(img,"200x200","static/"..fn)
+  img\destroy() 
+```
+
+Please check the exampel file `testform.moon` for detail information
+
+## Module included
+I am using modules from these source, but with some minor modification
+
+https://github.com/openresty/lua-resty-upload
+https://github.com/leafo/magick
+https://github.com/cloudflare/lua-resty-cookie
+https://github.com/bungle/lua-resty-session
+
 

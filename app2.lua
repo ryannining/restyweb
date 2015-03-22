@@ -1,5 +1,5 @@
 dofile("web.lua")
-myconnect("127.0.0.1", "root", "norikosakai", "ledhemat")
+myconnect("127.0.0.1", "user", "pass", "database")
 ck = split(cookies.last or "||||||||||||||", "||")
 local res1 = query("select * from customer where telp='" .. tostring(ck[1]) .. "'")
 raw("Hello world namaku:" .. tostring(session.namaku) .. ", namamu:" .. tostring(cookies.namamu))

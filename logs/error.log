@@ -1,0 +1,7 @@
+2015/03/22 17:51:01 [alert] 3842#0: lua_code_cache is off; this will hurt performance in /home/ryanwidi/www/restyweb/nginx.conf:19
+2015/03/22 17:51:47 [alert] 3854#0: lua_code_cache is off; this will hurt performance in /home/ryanwidi/www/restyweb/nginx.conf:19
+2015/03/22 17:51:47 [notice] 3854#0: signal process started
+2015/03/22 17:51:49 [alert] 3857#0: lua_code_cache is off; this will hurt performance in /home/ryanwidi/www/restyweb/nginx.conf:19
+2015/03/22 17:52:47 [alert] 3886#0: lua_code_cache is off; this will hurt performance in /home/ryanwidi/www/restyweb/nginx.conf:19
+2015/03/22 17:52:47 [notice] 3886#0: signal process started
+2015/03/22 17:52:48 [alert] 3889#0: lua_code_cache is off; this will hurt performance in /home/ryanwidi/www/restyweb/nginx.conf:19
