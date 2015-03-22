@@ -1,7 +1,7 @@
 local m={}
 my=require "mymysql"
-inspect=require "inspect"
 json=require("cjson")
+inspect=require("inspect")
 upload = require "resty.upload"
 mgk=require "resty1.magick1"
 m.myconnect=my.myconnect
@@ -36,17 +36,21 @@ end
 --getmetatable('').__index = function(str,i) return string.sub(str,i,i) end
 
 function m.nsay(s)
-  ngx.say(inspect(s))
+  ngx.say(json.encode(s))
 end
 function m.str_replace(h,c,s)
   return s:gsub(h, c)
 end
 
 function m.unslash(s)
-  return s:gsub("%\\n","\n"):gsub("%\\r","\r"):gsub("%\\","")
+  if isfill(s) then
+    return s:gsub("%\\n","\n"):gsub("%\\r","\r"):gsub("%\\","")
+  else 
+    return ""
+  end
 end
 function m.isempty(s)
-  return s=='' or s==nil or s==0
+  return s=='' or s==nil or s==0 or s==ngx.null
 end
 function m.isfill(s)
   return not m.isempty(s)
@@ -113,7 +117,8 @@ function m.start()
   for key, val in pairs(ngx.ctx.xfcookie) do
     ngx.ctx.cookies[key]=val
   end
-  
+  ngx.ctx.uploads=m.getupload()
+  return ngx.ctx.uploads
 end
 function m.finish()
   for key, val in pairs(ngx.ctx.cookies) do
@@ -127,16 +132,18 @@ function m.finish()
   if ngx.ctx.mydb then
     ngx.ctx.mydb:set_keepalive(6000, 10) 
   end
+  ngx.ctx.uploads=nil
+  ngx.ctx.gets=nil
   ngx.exit(ngx.HTTP_OK)
 end
 
-function m.getfilename(res)
-  if res[2] and string.find(res[2], 'filename') then
-    local filename = string.match(res[2], 'filename="(.*)"')
-    if filename then
-      return filename
-    end
-  end
+function m.getfield(res)
+  local v={}
+  res[2]:gsub('([^% ^%;^%=]+)%="([^%;]*)";?',
+		function(key,val)
+			v[key]=val
+		end)
+	return v
 end
 function m.getext(filename)
   return string.match(filename ,".+%.(%w+)$")
@@ -148,29 +155,57 @@ end
 function m.getupload()
   local form = upload:new(100000)
   local file_name=""
+  local input_name=""
   local resx=""
   local result={}
   while form~=nil do
     typ, res, err = form:read()
     if typ == "header" then
-      file_name = m.getfilename(res) or file_name
+      if res[1]=="Content-Disposition" then
+        tt=m.getfield(res)
+        file_name = tt.filename
+        input_name = tt.name
+        resx=""
+      end      
     elseif typ == "eof" then
-      break
-    end
-    if file_name then
-      if typ == "body" then 
+      break  
+    elseif typ == "body" then
+      if input_name then
         resx=resx..res
-      elseif typ == "part_end" then
-        if file_name then
-          result[file_name]=resx
-          resx=""
-          file_name = nil
-        end
       end
+    elseif typ == "part_end" then
+      if file_name then
+        result[input_name]={file_name,resx}
+        ngx.ctx.gets[input_name]=file_name
+      else
+        ngx.ctx.gets[input_name]=resx
+      end
+      resx=""
     end
   end
   return result
 end
+
+function m.exists(name)
+    if type(name)~="string" then return false end
+    return os.rename(name,name) and true or false
+end
+
+function m.isFile(name)
+    if type(name)~="string" then return false end
+    if not m.exist(name) then return false end
+    local f = io.open(name)
+    if f then
+        f:close()
+        return true
+    end
+    return false
+end
+
+function m.isDir(name)
+    return (m.exist(name) and not m.isFile(name))
+end
+
 m.inspect=inspect
-my.finish=finish
+my.finish=m.finish
 return m

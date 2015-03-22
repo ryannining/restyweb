@@ -1,8 +1,7 @@
 dofile("web.lua")
-local upload = getupload()
-for fn, fr in pairs(upload) do
-  local img = assert(mgk.load_image_from_blob(fr))
-  mgk.thumb(img, "200x200", "static/" .. fn)
+for fn, fr in pairs(uploads) do
+  local img = assert(mgk.load_image_from_blob(fr[2]))
+  mgk.thumb(img, "200x200", "static/" .. fr[1])
   img:destroy()
 end
 raw([[<!DOCTYPE html>
@@ -16,8 +15,8 @@ raw([[<!DOCTYPE html>
     <br><input type="submit" value="Upload Image" name="submit">
 ]])
 raw("UPLOADED and resized:<br>")
-for fn, fr in pairs(upload) do
-  raw(tostring(removeext(fn)) .. "<br><img src='static/" .. tostring(fn) .. "'><br>")
+for fn, fr in pairs(uploads) do
+  raw(tostring(removeext(fr[1])) .. "<br><img src='static/" .. tostring(fr[1]) .. "'><br>")
 end
 raw([[</form>
 

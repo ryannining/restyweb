@@ -1,10 +1,10 @@
 dofile("web.lua")
 
-upload=getupload()
-for fn,fr in pairs upload
-  img=assert(mgk.load_image_from_blob(fr))
-  mgk.thumb(img,"200x200","static/"..fn)
+for fn,fr in pairs uploads
+  img=assert(mgk.load_image_from_blob(fr[2]))
+  mgk.thumb(img,"200x200","static/"..fr[1])
   img\destroy() 
+
 
 raw [[
 <!DOCTYPE html>
@@ -19,8 +19,8 @@ raw [[
 ]]    
   
 raw "UPLOADED and resized:<br>"
-for fn,fr in pairs upload
-  raw "#{removeext(fn)}<br><img src='static/#{fn}'><br>"
+for fn,fr in pairs uploads
+  raw "#{removeext(fr[1])}<br><img src='static/#{fr[1]}'><br>"
 raw [[
 </form>
 

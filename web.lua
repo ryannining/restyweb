@@ -1,5 +1,5 @@
 web=require("myweb")
-web.start()
+uploads=web.start()
 
 
 query=web.myquery
