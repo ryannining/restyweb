@@ -162,6 +162,12 @@ To make converting php to moonscript easier i have add this function
 **echo** 
 same with raw `echo "hello world",view1`
 
+**isfill** `isfill(var)` *return true* if var contain values 
+since PHP thread nil,'',0 as false, and lua is not, so i create this function to check.
+
+**isempty** `isempty(var)` *return true* if var contain values 
+since PHP thread nil,'',0 as false, and lua is not, so i create this function to check.
+
 
 ## web.lua
 This file is called using `dofile` because we need to make some function to global and easier to call. ALso it started the http request, cookies, session processing. You can change is to meet your requirement
@@ -215,7 +221,22 @@ number_format=web.number_format
 ```
 
 ## imageMagick module
-This module is loaded into `mgk`, so you can open and process image.
+After frustating installing and fixing error on magick module. Now i modify a little this module to make it easier. You dont need to install
+libimagemagick-dev or install from source. Just need install using standard apt-get.
+
+```
+sudo apt-get install imagemagick
+```
+
+This module is loaded into `mgk`, so you can open and process image. If fail to load magick, please 
+find the library location, usually default location `/usr/lib/x86_64-linux-gnu/libMagickWand.so.5` is correct, but if not
+please change the `resty1\magick1.moon` at line 105 to match your lib location
+
+```
+lib = try_to_load "/usr/lib/x86_64-linux-gnu/libMagickWand.so.5"
+```
+
+We also include the `magick\resample.h` which this module needed. Of course the solution is not elegant, but it will safe many hours to fix why the module is not loaded.
 
 ## upload module
 To make upload easier, we make function `getupload` which return table of inputname and the {filename,content}. Example:
