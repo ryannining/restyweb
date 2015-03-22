@@ -51,7 +51,7 @@ Restart server : `./resty.sh restart`
 Stop server : `./resty.sh stop`
 
 
-When you change the `nginx.conf`, please restart the server to take effect. Also if you use lua code cache `**on**`, its necessary to restart the server too if you change your website code.
+When you change the `nginx.conf`, please restart the server to take effect. Also if you use lua code cache **`on`**, its necessary to restart the server too if you change your website code.
 
 ## nginx.conf
 Please edit the nginx.conf file to check
@@ -59,7 +59,7 @@ Please edit the nginx.conf file to check
 ## Using zerobrane IDE
 I use zerobrane IDE to make things easier. and to make things easier, please make this file and put into the zerobrane package folder
 
-`**zerobrane/moonscript.lua**`
+**`zerobrane/moonscript.lua`**
 
 Zerobrane package location usually are in `/opt/zbstudio/package`. It will help to syntax highlight moonscript and enable compile moonscript by pressing **F6**
 
@@ -107,16 +107,16 @@ finish!
 If you run that file, it will show nil at first load on the browser. But on second load (press F5) it will show the session and cookies data.
 
 ## views
-On folder views (or other folder) you can make a views script started with `**=>**` and call it on you main app
+On folder views (or other folder) you can make a views script started with **`=>`** and call it on you main app
 
-`**views/test.moon**`
+**`views/test.moon`**
 ```
 =>
   raw "Cookies data: #{cookies.data} <br>Session data: #{session.data}"
   -- do other things	
 ```
 
-`**app.moon**`
+**`app.moon`**
 ```
 dofile("web.lua")
 view1=require("views.test")
