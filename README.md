@@ -111,6 +111,8 @@ To make converting php to moonscript easier i have add this function
 
 **explode**
 `result = explode (",", "Hello,World")`
+**echo** same with raw `echo "hello world",view1`
+
 
 ## imageMagick module
 This module is loaded into `mgk`, so you can open and process image.
@@ -138,4 +140,7 @@ https://github.com/leafo/magick
 https://github.com/cloudflare/lua-resty-cookie
 https://github.com/bungle/lua-resty-session
 
-
+## Others
+http://wiki.nginx.org/HttpLuaModule
+http://moonscript.org/reference
+http://openresty.org/
