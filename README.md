@@ -2,7 +2,12 @@
 This project is aim to help converting php code to lua/moonscript app server using openresty.
 ## install requirement
 **openresty** http://openresty.org/
+
 **zerobrane** http://studio.zerobrane.com/
+
+**moonscript** http://moonscript.org/
+
+Also perhaps you need coffeescript and sass compiler, my modified zerobrane module will compile these file too by pressing F6.
 
 Check openresty website to install from source. For editor, i prefer zerobrane over atom, but if you like atom, its no problem. Atom is more mature and have packages for moonscript.
 
@@ -156,6 +161,57 @@ To make converting php to moonscript easier i have add this function
 **echo** same with raw `echo "hello world",view1`
 
 
+## web.lua
+This file is called using `dofile` because we need to make some function to global and easier to call. ALso it started the http request, cookies, session processing. You can change is to meet your requirement
+
+default content:
+
+```
+web=require("myweb")
+web.start()
+
+
+query=web.myquery
+querydict=web.querydict
+aquery=web.aquery
+myconnect=web.myconnect
+
+strlen=string.len
+floor=math.floor
+ceil=math.ceil
+strtolower=string.lower
+len=web.len
+count=web.len
+isfill=web.isfill
+isempty=web.isempty
+str_replace=web.str_replace
+trim=web.trim
+unslash=web.unslash
+
+echo=web.raw
+raw=web.raw
+
+sql_escape=ngx.quote_sql_str
+uri_unescape=ngx.unescape_uri
+split=web.split
+explode=web.explode
+
+die=web.finish
+finish=web.finish
+null=ngx.null
+
+session=ngx.ctx.session
+cookies=ngx.ctx.cookies
+gets=ngx.ctx.gets
+
+inspect=web.inspect
+getupload=web.getupload
+removeext=web.removeext
+getfilename=web.getfilename
+getext=web.getext
+number_format=web.number_format
+```
+
 ## imageMagick module
 This module is loaded into `mgk`, so you can open and process image.
 
@@ -184,6 +240,8 @@ https://github.com/leafo/magick
 https://github.com/cloudflare/lua-resty-cookie
 
 https://github.com/bungle/lua-resty-session
+
+https://github.com/openresty/lua-resty-mysql
 
 ## Others
 http://wiki.nginx.org/HttpLuaModule
