@@ -1,3 +1,3 @@
 return function(self)
-  return raw("Cookies data: " .. tostring(cookies.data) .. " <br>Session data: " .. tostring(session.data))
+  return raw("Request : " .. tostring(gets.data) .. " <br>Cookies data: " .. tostring(cookies.data) .. " <br>Session data: " .. tostring(session.data))
 end

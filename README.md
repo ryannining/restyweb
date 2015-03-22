@@ -6,6 +6,43 @@ This project is aim to help converting php code to lua/moonscript app server usi
 
 Check openresty website to install from source. For editor, i prefer zerobrane over atom, but if you like atom, its no problem. Atom is more mature and have packages for moonscript.
 
+The performance i have check its 2-3x faster on complex website. You can check it using siege on my website:
+
+**PHP**
+```
+siege -t 20s http://lampu.tokoled.net
+Transactions:		         150 hits
+Availability:		      100.00 %
+Elapsed time:		       19.20 secs
+Data transferred:	        2.77 MB
+Response time:		        1.35 secs
+Transaction rate:	        7.81 trans/sec
+Throughput:		        0.14 MB/sec
+Concurrency:		       10.58
+Successful transactions:         150
+Failed transactions:	           0
+Longest transaction:	        3.37
+Shortest transaction:	        0.26
+```
+
+**RESTYWEB**
+```
+siege -t 20s http://lampu.tokoled.net:8080
+Transactions:		         501 hits
+Availability:		      100.00 %
+Elapsed time:		       19.33 secs
+Data transferred:	       10.28 MB
+Response time:		        0.11 secs
+Transaction rate:	       25.92 trans/sec
+Throughput:		        0.53 MB/sec
+Concurrency:		        2.86
+Successful transactions:         501
+Failed transactions:	           0
+Longest transaction:	        0.48
+Shortest transaction:	        0.06
+
+```
+
 ## start server
 Make the `resty.sh` executable using `chmod +x ./resty.sh`
 
