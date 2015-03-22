@@ -168,7 +168,7 @@ default content:
 
 ```
 web=require("myweb")
-web.start()
+uploads=web.start()
 
 
 query=web.myquery
@@ -216,17 +216,22 @@ number_format=web.number_format
 This module is loaded into `mgk`, so you can open and process image.
 
 ## upload module
-To make upload easier, we make function `getupload` which return table of filename and the content. Example:
+To make upload easier, we make function `getupload` which return table of inputname and the {filename,content}. Example:
 
 ```
 dofile("web.lua")
 
-upload=getupload()
-for fn,fr in pairs upload
-  img=assert(mgk.load_image_from_blob(fr))
+~~upload=getupload()~~
+for fn,fr in pairs uploads
+  img=assert(mgk.load_image_from_blob(fr[1]))
   mgk.thumb(img,"200x200","static/"..fn)
   img\destroy() 
 ```
+
+Right now you dont need to call getupload, because its called on the web.lua and stored at the `uploads` global variable. So you can check if
+some input on the http form are contain file name, by checking `uploads['inputname'][1]` if is not `''` then `[2]` will contain the data.
+
+Also other input type (text,button,etc) will captured and stored at `gets` global variable.
 
 Please check the exampel file `testform.moon` for detail information
 
