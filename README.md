@@ -136,11 +136,16 @@ Please check the exampel file `testform.moon` for detail information
 I am using modules from these source, but with some minor modification
 
 https://github.com/openresty/lua-resty-upload
+
 https://github.com/leafo/magick
+
 https://github.com/cloudflare/lua-resty-cookie
+
 https://github.com/bungle/lua-resty-session
 
 ## Others
 http://wiki.nginx.org/HttpLuaModule
+
 http://moonscript.org/reference
+
 http://openresty.org/
