@@ -1,5 +1,10 @@
 # restyweb
 This project is aim to help converting php code to lua/moonscript app server using openresty.
+## install requirement
+**openresty** http://openresty.org/
+**zerobrane** http://studio.zerobrane.com/
+
+Check openresty website to install from source. For editor, i prefer zerobrane over atom, but if you like atom, its no problem. Atom is more mature and have packages for moonscript.
 
 ## start server
 Make the `resty.sh` executable using `chmod +x ./resty.sh`
@@ -147,5 +152,6 @@ https://github.com/bungle/lua-resty-session
 http://wiki.nginx.org/HttpLuaModule
 
 http://moonscript.org/reference
+
 
 http://openresty.org/
