@@ -5,7 +5,9 @@ This project is aim to help converting php code to lua/moonscript app server usi
 Make the `resty.sh` executable using `chmod +x ./resty.sh`
 
 Restart server : `./resty.sh restart`
+
 Stop server : `./resty.sh stop`
+
 
 When you change the `nginx.conf`, please restart the server to take effect. Also if you use lua code cache `**on**`, its necessary to restart the server too if you change your website code.
 
@@ -18,6 +20,8 @@ I use zerobrane IDE to make things easier. and to make things easier, please mak
 `**zerobrane/moonscript.lua**`
 
 Zerobrane package location usually are in `/opt/zbstudio/package`. It will help to syntax highlight moonscript and enable compile moonscript by pressing **F6**
+
+Dont forget to set the `Project->Intepretter` to `Moonscript`
 
 ## Start project
 Usually by editing nginx.conf and place route to your lua file. Example :
@@ -59,6 +63,36 @@ finish!
 ```
 
 If you run that file, it will show nil at first load on the browser. But on second load (press F5) it will show the session and cookies data.
+
+## views
+On folder views (or other folder) you can make a views script started with `**=>**` and call it on you main app
+
+`**views/test.moon**`
+```
+=>
+  raw "Cookies data: #{cookies.data} <br>Session data: #{session.data}"
+  -- do other things	
+```
+
+`**app.moon**`
+```
+dofile("web.lua")
+view1=require("views.test")
+view1!
+
+cookies.data="my cookies"
+session.data="my session"
+finish!
+```
+
+Also you can send it together with other stuff on `raw` call
+
+```
+raw "Hello world",view1
+```
+
+Notice that there is no ! in the code. `raw` function will call the view1 internally. Its because the nature of `raw` is collect all stuff as buffer. 
+If we put ! in the view it will cause the view1 codes inserted before the "Hello world" string.
 
 ## Mysql database
 To connect mysql database, call `myconnect`, example:
