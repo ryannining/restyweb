@@ -17,7 +17,8 @@
 # Description:       OpenResty (aka. ngx_openresty) is a full-fledged web application server by bundling the standard Nginx core, lots of 3rd-party Nginx modules, as well as most of their external dependencies.
 ### END INIT INFO
 #
- 
+
+mkdir logs
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DESC="Nginx Daemon"
 NAME=nginx

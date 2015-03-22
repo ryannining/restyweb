@@ -1,0 +1,57 @@
+env LAPIS_ENVIRONMENT=development;
+worker_processes 4;
+error_log stderr notice;
+daemon on;
+
+events {
+  worker_connections 1024;
+}
+
+http {
+  include mime.types;
+ 
+  server {
+    gzip on;
+    gzip_disable "msie6";
+
+    gzip_vary on;
+
+    listen 8080;
+    lua_code_cache off;
+    set $session_secret 623q4hR325t36VsCD3g567922IC0073T;
+    location / {
+      default_type text/html;
+      content_by_lua_file 'app.lua';
+    }
+    
+   
+    location /qproduk {
+      default_type text/html;
+      content_by_lua_file 'qproduk.lua';
+    }
+    location /data {
+      default_type text/html;
+      content_by_lua_file 'data.lua';
+    }
+    location /nota {
+      default_type text/html;
+      content_by_lua_file 'nota.lua';
+    }
+    location /test {
+      default_type text/html;
+      content_by_lua_file 'testform.lua';
+    }
+    location /test2 {
+      default_type text/html;
+      content_by_lua_file 'app2.lua';
+    }
+
+    location /static/ {
+      alias static/;
+    }
+
+    location /favicon.ico {
+      alias static/favicon.ico;
+    }
+  }
+}
