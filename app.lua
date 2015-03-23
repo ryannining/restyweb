@@ -1,4 +1,5 @@
 dofile("web.lua")
+myconnect("127.0.0.1", "root", "norikosakai", "ledhemat")
 if gets.x == '1' then
   session.data = ''
   cookies.data = ''
