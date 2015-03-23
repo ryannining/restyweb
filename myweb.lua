@@ -50,7 +50,7 @@ function m.unslash(s)
   end
 end
 function m.isempty(s)
-  return s=='' or s==nil or s==0 or s==ngx.null
+  return s==false or s=='' or s==nil or s==0 or s==ngx.null or #s==0
 end
 function m.isfill(s)
   return not m.isempty(s)
@@ -112,12 +112,20 @@ function m.start()
   for key, val in pairs(args) do
     ngx.ctx.gets[key]=val
   end
+  
+  ngx.ctx.uploads=m.getupload()
+  ngx.req.read_body()
+  ngx.ctx.posts={}
+  args, err = ngx.req.get_post_args()
+  for key, val in pairs(args) do
+      ngx.ctx.posts[key]=val
+      ngx.ctx.gets[key]=val
+  end
   ngx.ctx.cookies={}
   if ngx.ctx.xfcookie==nil then ngx.ctx.xfcookie={} end
   for key, val in pairs(ngx.ctx.xfcookie) do
     ngx.ctx.cookies[key]=val
   end
-  ngx.ctx.uploads=m.getupload()
   return ngx.ctx.uploads
 end
 function m.finish()

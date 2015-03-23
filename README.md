@@ -99,7 +99,7 @@ Why make hello world complicated ? its because we need to parse HTTP request, se
 calling `finish` also terminate the execution, so if you call in the midle of code, it will terminate, just like php `die` function. In fact, you can call `die` too it linked to `finish` anyway.
 
 ## Request, Cookies and Session
-Request, Cookies and session are easy. Just use global variabel `gets`,`session` and `cookies` , just dont forget to call `finish` in the end of file.
+Request, Cookies and session are easy. Just use global variabel `gets`,`posts`,`uploads`,`session` and `cookies` , just dont forget to call `finish` in the end of file.
 
 ```
 dofile("web.lua")
@@ -110,6 +110,8 @@ finish!
 ```
 
 If you run that file, it will show nil at first load on the browser. But on second load (press F5) it will show the session and cookies data.
+
+`posts` is same as get, but only contain data from POST request. While `gets` contain both GET and POST request. `uploads` only contain data from file upload. Oh `gets` contain dat from `uploads` too, but just the filename. If you want to get the data, you must get from `uploads` (each item contain {filename,content}).
 
 ## views
 On folder views (or other folder) you can make a views script started with **`=>`** and call it on you main app

@@ -1,3 +1,6 @@
 return function(self)
-  return raw("Request : " .. tostring(gets.data) .. " <br>Cookies data: " .. tostring(cookies.data) .. " <br>Session data: " .. tostring(session.data))
+  local res = query("select * from produk limit 2")
+  raw("hello world namaku : " .. tostring(session.namaku) .. "<br>")
+  raw("From web form : " .. tostring(gets.data) .. "<br>")
+  return raw("Global var " .. tostring(glo) .. "<br>From Database:<hr>", inspect(res), "<hr>")
 end
