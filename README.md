@@ -47,6 +47,22 @@ Longest transaction:	        0.48
 Shortest transaction:	        0.06
 
 ```
+## Using zerobrane IDE
+I use zerobrane IDE to make things easier. and to make things easier, please make this file and put into the zerobrane package folder
+
+**`zerobrane/moonscript.lua`**
+
+Zerobrane package location usually are in `/opt/zbstudio/package`. It will help to syntax highlight moonscript and enable compile moonscript by pressing **F6**
+
+Dont forget to set the `Project->Intepretter` to `Moonscript`
+
+## nginx.conf
+Please edit the nginx.conf and set `$home` to match your application location. And perhaps comment out item you dont need ,for example `include "phpsite.conf"`
+
+Currently this nginx.conf have feature:
+ 1. Multiple web app folder, by setting `$home` on `{server}`
+ 2. Support for PHP fast-cgi too, just edit the example file `phpsite.conf`
+ 
 
 ## start server
 Make the `resty.sh` executable using `chmod +x ./resty.sh`
@@ -58,25 +74,14 @@ Stop server : `./resty.sh stop`
 
 When you change the `nginx.conf`, please restart the server to take effect. Also if you use lua code cache **`on`**, its necessary to restart the server too if you change your website code.
 
-## nginx.conf
-Please edit the nginx.conf file to check
-
-## Using zerobrane IDE
-I use zerobrane IDE to make things easier. and to make things easier, please make this file and put into the zerobrane package folder
-
-**`zerobrane/moonscript.lua`**
-
-Zerobrane package location usually are in `/opt/zbstudio/package`. It will help to syntax highlight moonscript and enable compile moonscript by pressing **F6**
-
-Dont forget to set the `Project->Intepretter` to `Moonscript`
-
 ## Start project
-Usually by editing nginx.conf and place route to your lua file. Example :
+~~Usually by editing nginx.conf and place route to your lua file~~. Example :
 
 ```
+	set $home "/var/www/myapp"
     location / {
-      default_type text/html;
-      content_by_lua_file 'app.lua';
+		# no need to change this content
+		# ...
     }
 ```
 
@@ -97,6 +102,10 @@ finish!
 Why make hello world complicated ? its because we need to parse HTTP request, session, cookies. If you dont need these feature, just use `ngx.say` to send something to client.
 
 calling `finish` also terminate the execution, so if you call in the midle of code, it will terminate, just like php `die` function. In fact, you can call `die` too it linked to `finish` anyway.
+
+After compiling your moonscript, you can test by open webrowser and load `localhost:8080`, or on terminal, run command
+
+ `curl localhost:8080`
 
 ## Request, Cookies and Session
 Request, Cookies and session are easy. Just use global variabel `gets`,`posts`,`uploads`,`session` and `cookies` , just dont forget to call `finish` in the end of file.
