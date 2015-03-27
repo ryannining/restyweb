@@ -1,5 +1,13 @@
 # restyweb
 This project is aim to help converting php code to lua/moonscript app server using openresty.
+
+## Changes
+
+**28/3/2015**
+
+Change mysql backend to luasql, add more global variabel to `web.lua`, and begin to work on more complex php convertion.
+
+
 ## install requirement
 **openresty** http://openresty.org/
 
@@ -164,6 +172,31 @@ raw json.encode(res)
 finish!
 ```
 
+The result is like php `mysql_fetch_assoc`, which we can get the result using its field name:
+
+```
+...
+res=query("select * from product limit 10")
+raw res[1].totalprice
+-- this code is idenctical output, aquery will get first row
+res=aquery("select * from product limit 10")
+raw res.totalprice
+...
+```
+
+To get faster performance, you can use `queryf` which is not store the result info buffer, but 
+manually fetch one by one
+
+```
+...
+row=query("select * from product limit 10")
+while true
+   r=row() -- fetch one row
+   if not r then break -- if EOF
+   raw r.totalprice 
+...
+```
+
 ## Other function
 To make converting php to moonscript easier i have add this function
 
@@ -279,7 +312,10 @@ https://github.com/cloudflare/lua-resty-cookie
 
 https://github.com/bungle/lua-resty-session
 
-https://github.com/openresty/lua-resty-mysql
+~~https://github.com/openresty/lua-resty-mysql~~
+
+http://keplerproject.github.io/luasql/doc/us/manual.html#mysql_extensions
+
 
 ## Others
 http://wiki.nginx.org/HttpLuaModule
