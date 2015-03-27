@@ -17,14 +17,14 @@
 # Description:       OpenResty (aka. ngx_openresty) is a full-fledged web application server by bundling the standard Nginx core, lots of 3rd-party Nginx modules, as well as most of their external dependencies.
 ### END INIT INFO
 #
-
-mkdir logs
+ 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DESC="Nginx Daemon"
 NAME=nginx
 PREFIX=/usr/local/openresty/nginx
-DAEMON=$PREFIX/sbin/$NAME
-CONF=$NAME.conf
+DAEMON=$PREFIX/sbin/$NAME 
+OPT="-p `pwd`/"
+CONF=`pwd`/$NAME.conf
 PID=logs/$NAME.pid
 SCRIPT=/etc/init.d/$NAME
  
@@ -40,12 +40,12 @@ do_start() {
         echo -e "\033[33m $PID already exists. \033[0m"
         echo -e "\033[33m $DESC is already running or crashed. \033[0m"
         echo -e "\033[32m $DESC Reopening $CONF ... \033[0m"
-        $DAEMON -s reopen -c $CONF
+        $DAEMON $OPT -s reopen -c $CONF
         sleep 1
         echo -e "\033[36m $DESC reopened. \033[0m"
     else
         echo -e "\033[32m $DESC Starting $CONF ... \033[0m"
-        $DAEMON -p `pwd`/ -c $CONF
+        $DAEMON $OPT  -c $CONF
         sleep 1
         echo -e "\033[36m $DESC started. \033[0m"
     fi
@@ -57,7 +57,7 @@ do_stop() {
         echo -e "\033[33m $DESC isn't running. \033[0m"
     else
         echo -e "\033[32m $DESC Stopping $CONF ... \033[0m"
-        $DAEMON -p `pwd`/ -s stop -c $CONF
+        $DAEMON $OPT  -s stop -c $CONF
         sleep 1
         echo -e "\033[36m $DESC stopped. \033[0m"
     fi
@@ -68,12 +68,12 @@ do_reload() {
         echo -e "\033[33m $PID doesn't exist. \033[0m"
         echo -e "\033[33m $DESC isn't running. \033[0m"
         echo -e "\033[32m $DESC Starting $CONF ... \033[0m"
-        $DAEMON -p `pwd`/ -c $CONF
+        $DAEMON $OPT  -c $CONF
         sleep 1
         echo -e "\033[36m $DESC started. \033[0m"
     else
         echo -e "\033[32m $DESC Reloading $CONF ... \033[0m"
-        $DAEMON -p `pwd`/ -s reload -c $CONF
+        $DAEMON $OPT  -s reload -c $CONF
         sleep 1
         echo -e "\033[36m $DESC reloaded. \033[0m"
     fi
@@ -85,7 +85,7 @@ do_quit() {
         echo -e "\033[33m $DESC isn't running. \033[0m"
     else
         echo -e "\033[32m $DESC Quitting $CONF ... \033[0m"
-        $DAEMON -p `pwd`/ -s quit -c $CONF
+        $DAEMON $OPT  -s quit -c $CONF
         sleep 1
         echo -e "\033[36m $DESC quitted. \033[0m"
     fi
@@ -93,11 +93,11 @@ do_quit() {
  
 do_test() {
     echo -e "\033[32m $DESC Testing $CONF ... \033[0m"
-    $DAEMON -p `pwd`/ -t -c $CONF
+    $DAEMON $OPT  -t -c $CONF
 }
  
 do_info() {
-    $DAEMON -V
+    $DAEMON $OPT -V
 }
  
 case "$1" in
