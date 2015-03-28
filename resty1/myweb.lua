@@ -1,4 +1,6 @@
-local my = require("resty1.mymysql")
+local DB_BACKEND = "resty1.mymysql"
+DB_BACKEND = "resty1.luamysql"
+local my = require("resty1.luamysql")
 local json = require("cjson")
 local inspect = require("resty1.inspect")
 local upload = require("resty.upload")
@@ -109,12 +111,14 @@ m = {
       ngx.ctx.gets[key] = val
     end
     ngx.ctx.uploads = m.getupload()
-    ngx.req.read_body()
-    ngx.ctx.posts = { }
-    args, err = ngx.req.get_post_args()
-    for key, val in pairs(args) do
-      ngx.ctx.posts[key] = val
-      ngx.ctx.gets[key] = val
+    if not ngx.ctx.uploads then
+      ngx.req.read_body()
+      ngx.ctx.posts = { }
+      args, err = ngx.req.get_post_args()
+      for key, val in pairs(args) do
+        ngx.ctx.posts[key] = val
+        ngx.ctx.gets[key] = val
+      end
     end
     ngx.ctx.cookies = { }
     if ngx.ctx.xfcookie == nil then
@@ -162,11 +166,12 @@ m = {
     local file_name = ""
     local input_name = ""
     local resx = ""
-    local result = { }
+    local result = nil
     while form ~= nil do
-      local typ, res, err = {
-        form = read()
-      }
+      if not result then
+        result = { }
+      end
+      local typ, res, err = form:read()
       if typ == "header" then
         if res[1] == "Content-Disposition" then
           local tt = m.getfield(res)
@@ -180,7 +185,7 @@ m = {
         if input_name then
           resx = resx .. res
         end
-      elseif typ == "part_  " then
+      elseif typ == "part_end" then
         if file_name then
           result[input_name] = {
             file_name,
@@ -209,9 +214,8 @@ m = {
       return false
     end
     local f = io.open(name)
-    if f({
-      f = close()
-    }) then
+    if f then
+      f:close()
       return true
     end
     return false

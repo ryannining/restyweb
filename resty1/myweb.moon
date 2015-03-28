@@ -1,4 +1,7 @@
-my=require "resty1.mymysql"
+DB_BACKEND = "resty1.mymysql"
+DB_BACKEND = "resty1.luamysql"
+
+my=require "resty1.luamysql"
 json=require("cjson")
 inspect=require("resty1.inspect")
 upload = require "resty.upload"
@@ -92,20 +95,22 @@ m=
     ngx.ctx.gets={}
     for key, val in pairs(args) do
       ngx.ctx.gets[key]=val
-    
+      
     ngx.ctx.uploads=m.getupload()
-    ngx.req.read_body()
-    ngx.ctx.posts={}
-    args, err = ngx.req.get_post_args()
-    for key, val in pairs(args) do
-        ngx.ctx.posts[key]=val
-        ngx.ctx.gets[key]=val
+    if not ngx.ctx.uploads
+        ngx.req.read_body()
+        ngx.ctx.posts={}
+        args, err = ngx.req.get_post_args()
+        for key, val in pairs(args) do
+            ngx.ctx.posts[key]=val
+            ngx.ctx.gets[key]=val
       
     ngx.ctx.cookies={}
     if ngx.ctx.xfcookie==nil then ngx.ctx.xfcookie={}   
     for key, val in pairs(ngx.ctx.xfcookie) do
       ngx.ctx.cookies[key]=val
       
+    
     return ngx.ctx.uploads
   
   finish:->
@@ -144,9 +149,10 @@ m=
     file_name=""
     input_name=""
     resx=""
-    result={}
+    result=nil
     while form~=nil do
-      typ, res, err = form:read()
+      if not result then result={}
+      typ, res, err = form\read()
       if typ == "header" then
         if res[1]=="Content-Disposition"
           tt=m.getfield(res)
@@ -160,7 +166,7 @@ m=
         if input_name
           resx=resx..res
           
-      elseif typ == "part_  "
+      elseif typ == "part_end"
         if file_name
           result[input_name]={file_name,resx}
           ngx.ctx.gets[input_name]=file_name
@@ -186,7 +192,7 @@ m=
       return false   
     f = io.open(name)
     if f
-      f:close()
+      f\close()
       return true
       
     return false

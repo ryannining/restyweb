@@ -1,4 +1,4 @@
-local mysql = require("luasql.mysql")
+local mysql = require("resty.mysql")
 local logcolor = {
   '\033[95m',
   '\033[94m',
@@ -11,46 +11,36 @@ local logcolor = {
 }
 m = {
   myconnect = function(server, username, passw, base)
-    ngx.ctx.env = mysql.mysql()
-    ngx.ctx.conn = ngx.ctx.env:connect(base, username, passw, server)
+    local err
+    ngx.ctx.mydb, err = mysql:new()
+    ngx.ctx.mydb:set_timeout(10000)
+    local ok, errno, sqlstate
+    ok, err, errno, sqlstate = ngx.ctx.mydb:connect({
+      host = server,
+      port = 3306,
+      database = base,
+      user = username,
+      password = passw,
+      max_packet_size = 1024 * 1024
+    })
+    if not ok then
+      print(logcolor[1], "failed to connect: ", err, ": ", errno, " ", sqlstate)
+      return m.finish()
+    end
   end,
   myqueryf = function(sql, hash)
-    if not hash then
-      hash = "a"
-    else
-      hash = "n"
-    end
-    local row = { }
-    local cursor = ngx.ctx.conn:execute(sql)
-    return function()
-      return cursor:fetch(row, hash)
-    end
+    return nil
   end,
   myquery = function(sql, hash)
-    if not hash then
-      hash = "a"
-    else
-      hash = "n"
+    local res, err, errno, sqlstate = ngx.ctx.mydb:query(sql)
+    if not res then
+      print(logcolor[2], "\nSQL:\n" .. sql .. "\nbad result: ", err, ": ", errno, ": ", sqlstate, ".")
+      m.finish()
     end
-    local cursor, errorString = ngx.ctx.conn:execute(sql)
-    if type(cursor) ~= 'number' then
-      local r = cursor:fetch({ }, hash)
-      local res = { }
-      while r do
-        res[#res + 1] = r
-        r = cursor:fetch({ }, hash)
-      end
-      return res
-    else
-      if errorString then
-        print("\n\n", sql, "\n", errorString, "\n\n")
-        return m.finish()
-      end
-    end
+    return res
   end,
   close = function()
-    ngx.ctx.conn:close()
-    return ngx.ctx.env:close()
+    return ngx.ctx.mydb:set_keepalive(10000, 10)
   end
 }
 return m
