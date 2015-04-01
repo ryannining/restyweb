@@ -1,1 +1,19 @@
-/home/ryanwidi/www/senter3/test2.lua
+dofile("web.lua")
+local mysql = require("luasql.mysql")
+myconnect("127.0.0.1", "root", "norikosakai", "diggersf_android")
+local x = os.clock()
+local fetch = queryf("select * from transaksi limit 100000")
+raw('<br>')
+raw(os.clock() - x)
+raw('Seconds')
+raw("<hr>")
+local r = fetch()
+while r do
+  raw(r.totalprice, r.jumlah, r.idmtr)
+  r = fetch()
+end
+raw('<br>')
+raw(os.clock() - x)
+raw('Seconds')
+raw("<hr>")
+return finish()
