@@ -213,6 +213,27 @@ DB_BACKEND = "resty1.luamysql"
       sidx=lsidx
       sbuffer=lbuffer
       lbuffer=nil
+    strpos:(haystack, needle, offset) ->
+      pattern = string.format("(%s)", needle)
+      i       = string.find(haystack, pattern, (offset or 0))
+      return toint(i)
+    round:(num, idp)->
+      mult = 10^(idp or 0)
+      return math.floor(num * mult + 0.5) / mult
+    toint:(x,y)->
+        if x and y then return tonumber(x[y]) or 0 
+        if x then return tonumber(x) or 0 
+        return 0
+    tostr:(x,y)->
+        if x and y then return tostring(x[y]) 
+        if x then return tostring(x) 
+        return ''
+    include:(f)->
+      f=io.open(f,'r')
+      ss=f:read("*all")
+      f:close()
+      raw(ss)
+      
   my.finish=m.finish
   return m
   

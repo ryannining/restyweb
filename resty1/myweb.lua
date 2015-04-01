@@ -247,6 +247,43 @@ return function()
       sidx = lsidx
       sbuffer = lbuffer
       lbuffer = nil
+    end,
+    strpos = function(haystack, needle, offset)
+      local pattern = string.format("(%s)", needle)
+      local i = string.find(haystack, pattern, (offset or 0))
+      return toint(i)
+    end,
+    round = function(num, idp)
+      local mult = 10 ^ (idp or 0)
+      return math.floor(num * mult + 0.5) / mult
+    end,
+    toint = function(x, y)
+      if x and y then
+        return tonumber(x[y]) or 0
+      end
+      if x then
+        return tonumber(x) or 0
+      end
+      return 0
+    end,
+    tostr = function(x, y)
+      if x and y then
+        return tostring(x[y])
+      end
+      if x then
+        return tostring(x)
+      end
+      return ''
+    end,
+    include = function(f)
+      f = io.open(f, 'r')
+      local ss = {
+        f = read("*all")
+      }
+      local _ = {
+        f = close()
+      }
+      return raw(ss)
     end
   }
   my.finish = m.finish

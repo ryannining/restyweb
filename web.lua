@@ -12,20 +12,15 @@ aquery=web.aquery
 myconnect=web.myconnect
 
 strlen=string.len
-function strpos (haystack, needle, offset) 
-  local pattern = string.format("(%s)", needle)
-  local i       = string.find (haystack, pattern, (offset or 0))
-  
-  return toint(i)
-end
+strpos=web.strpos
+round=web.round
+toint=web.toint
+tostr=web.tostr
+include=web.include
 
 floor=math.floor
 max=math.max
 min=math.min
-function round(num, idp)
-  local mult = 10^(idp or 0)
-  return math.floor(num * mult + 0.5) / mult
-end
 
 ceil=math.ceil
 strtolower=string.lower
@@ -47,7 +42,6 @@ explode=web.explode
 
 die=web.finish
 finish=web.finish
---ngx.null=nil
 null=ngx.null
 
 session=web.session
@@ -72,7 +66,6 @@ str_repeat = string.rep
 ob_start=web.ob_start
 ob_get_contents=web.ob_get_contents
 ob_end_clean=web.ob_end_clean
-
 
 function makekomen(oleh,isi,alt)
     --return $isi;
@@ -136,19 +129,3 @@ function makekomen(oleh,isi,alt)
     return isi
 end
 
-function toint(x,y)
-    if x and y then return tonumber(x[y]) or 0 end
-    if x then return tonumber(x) or 0 end
-    return 0
-end
-function tostr(x,y)
-    if x and y then return tostring(x[y]) end
-    if x then return tostring(x) end
-    return ''
-end
-function include(f)
-  f=io.open(f,'r')
-  ss=f:read("*all")
-  f:close()
-  raw(ss)
-end  

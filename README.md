@@ -3,6 +3,12 @@ This project is aim to help converting php code to lua/moonscript app server usi
 
 ## Changes
 
+**1/4/2015**
+
+- Implement php `ob_start`, `ob_get_contents`,`ob_end_clean`
+- Reduce use of ngx.ctx , response buffering using module local table
+- new mysql API - fetch one by one `queryf`
+
 **28/3/2015**
 
 Change mysql backend to luasql, add more global variabel to `web.lua`, and begin to work on more complex php convertion.
@@ -13,46 +19,64 @@ Change mysql backend to luasql, add more global variabel to `web.lua`, and begin
 
 **zerobrane** http://studio.zerobrane.com/
 
-**moonscript** http://moonscript.org/
+**moonscript** http://moonscript.org/ (ALL EXAMPLE CODE ARE MOONSCRIPT)
 
 Also perhaps you need coffeescript and sass compiler, my modified zerobrane module will compile these file too by pressing F6.
 
 Check openresty website to install from source. For editor, i prefer zerobrane over atom, but if you like atom, its no problem. Atom is more mature and have packages for moonscript.
 
-The performance i have check its 2-3x faster on complex website. You can check it using siege on my website:
+The performance i have check its 2-3x faster on complex website. You can check it using siege on 
+my website (using nginx php-fpm):
 
 **PHP**
 ```
-siege -t 20s http://lampu.tokoled.net
-Transactions:		         150 hits
-Availability:		      100.00 %
-Elapsed time:		       19.20 secs
-Data transferred:	        2.77 MB
-Response time:		        1.35 secs
-Transaction rate:	        7.81 trans/sec
-Throughput:		        0.14 MB/sec
-Concurrency:		       10.58
-Successful transactions:         150
+siege -b -t 20s http://lampu.tokoled.net
+Transactions:   		         340 hits
+Availability:	    	      100.00 %
+Elapsed time:	    	       19.90 secs
+Data transferred:   	        5.27 MB
+Response time:		            0.87 secs
+Transaction rate:	           17.09 trans/sec
+Throughput:		                0.26 MB/sec
+Concurrency:		           14.82
+Successful transactions:         340
 Failed transactions:	           0
-Longest transaction:	        3.37
-Shortest transaction:	        0.26
+Longest transaction:	        4.98
+Shortest transaction:	        0.22
+
 ```
 
 **RESTYWEB**
 ```
-siege -t 20s http://lampu.tokoled.net:8080
-Transactions:		         501 hits
-Availability:		      100.00 %
-Elapsed time:		       19.33 secs
-Data transferred:	       10.28 MB
-Response time:		        0.11 secs
-Transaction rate:	       25.92 trans/sec
-Throughput:		        0.53 MB/sec
-Concurrency:		        2.86
-Successful transactions:         501
+siege -b -t 20s http://lampu.tokoled.net:81
+
+lua_code_cache on
+Transactions:   		        1034 hits
+Availability:	    	      100.00 %
+Elapsed time:		           19.61 secs
+Data transferred:	           21.70 MB
+Response time:		            0.28 secs
+Transaction rate:	          52.73 trans/sec
+Throughput:		                1.11 MB/sec
+Concurrency:		           14.91
+Successful transactions:        1034
 Failed transactions:	           0
-Longest transaction:	        0.48
-Shortest transaction:	        0.06
+Longest transaction:	        0.89
+Shortest transaction:	        0.07
+
+lua_code_cache off
+Transactions:   		         808 hits
+Availability:   		      100.00 %
+Elapsed time:   		       19.59 secs
+Data transferred:   	       17.08 MB
+Response time:  		        0.36 secs
+Transaction rate:   	       41.25 trans/sec
+Throughput:     		        0.87 MB/sec
+Concurrency:	    	       14.86
+Successful transactions:         808
+Failed transactions:	           0
+Longest transaction:	        1.51
+Shortest transaction:	        0.07
 
 ```
 ## Using zerobrane IDE
@@ -197,6 +221,9 @@ while true
 ...
 ```
 
+For calculated field, for example `sum(jumlah+20)` you need to define the field name by using `sum(jumla+20) as sum1`, 
+then you can access it by `row.sum1`
+
 ## Other function
 To make converting php to moonscript easier i have add this function
 
@@ -216,53 +243,7 @@ since PHP thread nil,'',0 as false, and lua is not, so i create this function to
 ## web.lua
 This file is called using `dofile` because we need to make some function to global and easier to call. ALso it started the http request, cookies, session processing. You can change is to meet your requirement
 
-default content:
-
-```
-web=require("myweb")
-uploads=web.start()
-
-
-query=web.myquery
-querydict=web.querydict
-aquery=web.aquery
-myconnect=web.myconnect
-
-strlen=string.len
-floor=math.floor
-ceil=math.ceil
-strtolower=string.lower
-len=web.len
-count=web.len
-isfill=web.isfill
-isempty=web.isempty
-str_replace=web.str_replace
-trim=web.trim
-unslash=web.unslash
-
-echo=web.raw
-raw=web.raw
-
-sql_escape=ngx.quote_sql_str
-uri_unescape=ngx.unescape_uri
-split=web.split
-explode=web.explode
-
-die=web.finish
-finish=web.finish
-null=ngx.null
-
-session=ngx.ctx.session
-cookies=ngx.ctx.cookies
-gets=ngx.ctx.gets
-
-inspect=web.inspect
-getupload=web.getupload
-removeext=web.removeext
-getfilename=web.getfilename
-getext=web.getext
-number_format=web.number_format
-```
+Please check the file, but i think its better not to modify the content.
 
 ## imageMagick module
 After frustating installing and fixing error on magick module. Now i modify a little this module to make it easier. You dont need to install
@@ -273,8 +254,7 @@ sudo apt-get install imagemagick
 ```
 
 This module is loaded into `mgk`, so you can open and process image. If fail to load magick, please 
-find the library location, usually default location `/usr/lib/x86_64-linux-gnu/libMagickWand.so.5` is correct, but if not
-please change the `resty1\magick1.moon` at line 105 to match your lib location
+find the library location, usually default location `/usr/lib/x86_64-linux-gnu/libMagickWand.so.5` for x64 and `/usr/lib/i386-linux-gnu/libMagickWand.so.5` is correct, but if not please change the `resty1\magick1.moon` at line 105 to match your lib location. Default is x64 location.
 
 ```
 lib = try_to_load "/usr/lib/x86_64-linux-gnu/libMagickWand.so.5"
@@ -288,10 +268,11 @@ To make upload easier, we make function `getupload` which return table of inputn
 ```
 dofile("web.lua")
 
-for fn,fr in pairs uploads
-  img=assert(mgk.load_image_from_blob(fr[1]))
-  mgk.thumb(img,"200x200","static/"..fn)
-  img\destroy() 
+if uploads
+    for fn,fr in pairs uploads
+      img=assert(mgk.load_image_from_blob(fr[1]))
+      mgk.thumb(img,"200x200","static/"..fn)
+      img\destroy() 
 ```
 
 Right now you dont need to call `getupload` (on previous version), because its called on the `web.lua` and stored at the `uploads` global variable. So you can check if
